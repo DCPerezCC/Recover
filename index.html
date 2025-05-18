@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PLDT Password Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #8b0c19, #660b0b);
+      color: #ffffff;
+    }
+    .container {
+      max-width: 500px;
+      margin: 60px auto;
+      background: #ffffff;
+      color: #333;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px;
+      max-width: 180px;
+    }
+    h2 {
+      text-align: center;
+      color: #8b0c19;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: 600;
+      color: #333;
+    }
+    select, input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    button {
+      background-color: #8b0c19;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #660b0b;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #2d3436;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://pldtenterprise.com/themes/pldt-enterprise/assets/images/pldt-enterprise.png" alt="PLDT Logo" class="logo">
+    <h2>PLDT Password Generator</h2>
+    <label for="type">Select Conversion Type (based on SSID format):</label>
+    <select id="type">
+      <option value="PLDTWIFI">PLDTWIFI – For SSID like 'PLDTWIFIXXXX' — enter full MAC (e.g., C0:4A:00:D0:44:C0)</option>
+      <option value="PLDTFIBR">PLDTFIBR – For SSID like 'PLDTFIBR_XXXXXX' — enter full MAC (e.g., C5:C4:C9:XX:XX:XX)</option>
+      <option value="PLDTHOMEDSL">PLDTHOMEDSL – For SSID like 'PLDTHOMEDSL21354' — enter suffix (e.g., 21354 or 1A2F3)</option>
+      <option value="HomeBro">HomeBro – For SSID like 'HomeBro_XXXXXX' — enter full MAC (e.g., 00:1F:FB:0F:C5:A8)</option>
+      <option value="PLDTHOMEFBR">PLDTHOMEFBR – For SSID like 'PLDTHOMEFBRXXXX' — enter full MAC (e.g., A1:B2:C3:D4:E5:F6)</option>
+    </select>
+
+    <label for="mac">Input:</label>
+    <input type="text" id="mac" placeholder="Enter required value based on selected type" />
+
+    <button onclick="generatePassword()">Generate Password</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const hexMap = {
+      '0': 'f', '1': 'e', '2': 'd', '3': 'c', '4': 'b', '5': 'a',
+      '6': '9', '7': '8', '8': '7', '9': '6',
+      'a': '5', 'b': '4', 'c': '3', 'd': '2', 'e': '1', 'f': '0',
+      'A': '5', 'B': '4', 'C': '3', 'D': '2', 'E': '1', 'F': '0'
+    };
+
+    function convertHexSegment(segment) {
+      return segment.split('').map(c => hexMap[c] || '?').join('');
+    }
+
+    function generatePassword() {
+      const type = document.getElementById('type').value;
+      const input = document.getElementById('mac').value.replace(/[^a-fA-F0-9]/g, '');
+      let result = '';
+
+      if (type === 'PLDTWIFI') {
+        if (input.length < 5) {
+          result = 'Invalid MAC Address for PLDTWIFI.';
+        } else {
+          const last5 = input.slice(-5);
+          result = 'Default Password: PLDTWIFI' + convertHexSegment(last5);
+        }
+      } else if (type === 'PLDTFIBR') {
+        if (input.length < 6) {
+          result = 'Invalid MAC Address for PLDTFIBR.';
+        } else {
+          const last6 = input.slice(-6);
+          result = 'Default Password: wlan' + convertHexSegment(last6);
+        }
+      } else if (type === 'PLDTHOMEDSL') {
+        if (/^[0-9]+$/.test(input)) {
+          const num = parseInt(input);
+          result = 'Default Password: PLDTWIFI' + (num * 3);
+        } else if (/^[a-fA-F0-9]+$/.test(input)) {
+          const num = parseInt(input, 16);
+          result = 'Default Password: PLDTWIFI' + (num * 3);
+        } else {
+          result = 'Invalid DSL suffix.';
+        }
+      } else if (type === 'HomeBro') {
+        if (input.length < 6) {
+          result = 'Invalid MAC Address for HomeBro.';
+        } else {
+          result = 'Default Password: HomeBro_' + input.slice(-6).toUpperCase();
+        }
+      } else if (type === 'PLDTHOMEFBR') {
+        if (input.length < 6) {
+          result = 'Invalid MAC Address for PLDTHOMEFBR.';
+        } else {
+          const last6 = input.slice(-6);
+          result = 'Default Password: PLDTWIFI' + convertHexSegment(last6);
+        }
+      }
+
+      document.getElementById('result').textContent = result;
+    }
+  </script>
+</body>
+</html>
