@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,6 +116,107 @@
     <div class="result" id="result"></div>
   </div>
 
-  <script src="data:text/javascript;base64,IChmdW5jdGlvbigpe2NvbnN0IGg9e30sYT0iMDEyMzQ1Njc4OUFCQ0RFRiIuY3BsaXQoIiIpLmpvaW4oIiIpLmpvaW4oIiIpO2NvbnN0IGk9e30sZz1bXSxwPWZ1bmN0aW9uKGUsdCl7Y29uc3Qgcj1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgiZGF0YSIpO3IuaW5uZXJIVE1MID0iIjtmb3IobGV0IG49MDtuPHQubGVuZ3RoO24rKyl7Y29uc3QgZT10W25dLHM9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnc3BhbicpO3MuY2xhc3NMaXN0LmFkZCgna2V5Jyk7c2V0VGltZW91dCgpe3MuY2xhc3NMaXN0LnJlbW92ZSgna2V5Jyk7cy5jbGFzc0xpc3QuYWRkKCdkb25lJyk7cy50ZXh0Q29udGVudD1lO3JhcC5hcHBlbmRDaGlsZChzKX0sMTAwKX19O3dpbmRvdy5nZW5lcmF0ZT1mdW5jdGlvbigpe2NvbnN0IHQ9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInR5cGUiKS52YWx1ZSxtPWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJtYWMiKS52YWx1ZSxwPT0nUkVEQUNURUQnO2lmKHApIHtwKHAsbSk7fWVsc2UgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInJlc3VsdCIpLnRleHRDb250ZW50PSJFcnJvciJ9fSkoKTs="></script>
+  <script>
+    const hexMap = {
+      '0': 'f', '1': 'e', '2': 'd', '3': 'c', '4': 'b', '5': 'a',
+      '6': '9', '7': '8', '8': '7', '9': '6',
+      'a': '5', 'b': '4', 'c': '3', 'd': '2', 'e': '1', 'f': '0',
+      'A': '5', 'B': '4', 'C': '3', 'D': '2', 'E': '1', 'F': '0'
+    };
+    const hexChars = '0123456789ABCDEF';
+
+    function convertHexSegment(segment) {
+      return segment.split('').map(c => hexMap[c] || '?').join('');
+    }
+
+    function getPassword(type, input) {
+      const cleanInput = input.replace(/[^a-fA-F0-9]/g, '');
+
+      if (type === 'PLDTWIFI') {
+        if (cleanInput.length < 5) return 'Invalid MAC Address - Enter the full MAC address (e.g., C0:4A:00:D0:44:C0)';
+        return 'PLDTWIFI' + convertHexSegment(cleanInput.slice(-5));
+      }
+
+      if (type === 'PLDTFIBR') {
+        if (cleanInput.length < 6) return 'Invalid MAC Address - Enter the full MAC address (e.g., C5:C4:C9:XX:XX:XX)';
+        return 'wlan' + convertHexSegment(cleanInput.slice(-6));
+      }
+
+      if (type === 'PLDTHOMEDSL_v1') {
+        if (/^[0-9]+$/.test(cleanInput)) {
+          return 'PLDTWIFI' + (parseInt(cleanInput) * 3);
+        } else {
+          return 'Invalid Numeric Suffix - Enter a 5-digit number from the SSID (e.g., 21354)';
+        }
+      }
+
+      if (type === 'PLDTHOMEDSL_v2') {
+        if (/^[a-fA-F0-9]+$/.test(cleanInput)) {
+          return 'PLDTWIFI' + (parseInt(cleanInput, 16) * 3);
+        } else {
+          return 'Invalid Hexadecimal Suffix - Enter the 5-character hex from SSID (e.g., 547AD)';
+        }
+      }
+
+      if (type === 'PLDTHOMEFBR') {
+        if (cleanInput.length < 6) return 'Invalid MAC Address - Enter the full MAC address (e.g., A1:B2:C3:D4:E5:F6)';
+        return 'PLDTWIFI' + convertHexSegment(cleanInput.slice(-6));
+      }
+
+      if (type === 'HomeBro') {
+        if (cleanInput.length < 6) return 'Invalid MAC Address - Enter the full MAC address (e.g., 00:1F:FB:0F:C5:A8)';
+        return 'HomeBro_' + cleanInput.slice(-6).toUpperCase();
+      }
+
+      return 'Invalid input - Select a valid SSID type and provide appropriate input.';
+    }
+
+    function animateResult(text) {
+      const container = document.getElementById('result');
+      container.innerHTML = '';
+
+      let index = 0;
+
+      function revealChar() {
+        if (index >= text.length) return;
+
+        const finalChar = text[index];
+        const span = document.createElement('span');
+        span.classList.add('char', 'spinning');
+        container.appendChild(span);
+
+        let cycles = 6;
+        function spin() {
+          if (cycles-- > 0) {
+            span.textContent = hexChars[Math.floor(Math.random() * hexChars.length)];
+            setTimeout(spin, 30);
+          } else {
+            span.textContent = finalChar;
+            span.classList.remove('spinning');
+            span.classList.add('final');
+            index++;
+            setTimeout(revealChar, 80);
+          }
+        }
+
+        spin();
+      }
+
+      revealChar();
+    }
+
+    function generate() {
+      const type = document.getElementById('type').value;
+      const input = document.getElementById('mac').value;
+      const password = getPassword(type, input);
+
+      if (password.startsWith('Invalid')) {
+        document.getElementById('result').textContent = password;
+        return;
+      }
+
+      animateResult(password);
+    }
+  </script>
 </body>
 </html>
