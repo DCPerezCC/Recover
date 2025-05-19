@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network AP Recovery</title>
+  <style>
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 0;
+      background-color: #000000;
+      color: #00ff00;
+    }
+    .container {
+      max-width: 600px;
+      margin: 60px auto;
+      background-color: #0f0f0f;
+      border: 1px solid #00ff00;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 0 20px #00ff00;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 20px;
+      max-width: 180px;
+      filter: grayscale(100%) brightness(1.2);
+    }
+    h2 {
+      text-align: center;
+      color: #00ff00;
+      text-shadow: 0 0 5px #0f0, 0 0 10px #0f0;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+      color: #00ffe0;
+      text-shadow: 0 0 5px #00ffe0;
+    }
+    select, input, button {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #00ff00;
+      background-color: #000;
+      color: #00ff00;
+      font-size: 16px;
+    }
+    input::placeholder {
+      color: #00ff00;
+      opacity: 0.6;
+    }
+    button {
+      background-color: #001100;
+      border: 1px solid #00ff00;
+      color: #00ff00;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    button:hover {
+      background-color: #002200;
+      box-shadow: 0 0 8px #00ff00;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #00ff00;
+      text-align: center;
+      font-size: 24px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .char {
+      display: inline-block;
+      margin: 0 2px;
+      transition: all 0.2s ease;
+    }
+    .spinning {
+      color: #444;
+      font-weight: normal;
+    }
+    .final {
+      color: #00ff00;
+      font-weight: bold;
+      text-shadow: 0 0 5px #0f0, 0 0 10px #0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="https://pldtenterprise.com/themes/pldt-enterprise/assets/images/pldt-enterprise.png" alt="PLDT Logo" class="logo">
+    <h2>Network AP Recovery</h2>
+
+    <label for="type">Select SSID and Version:</label>
+    <select id="type">
+      <option value="PLDTWIFI">PLDTWIFI — Input: Full MAC Address</option>
+      <option value="PLDTFIBR">PLDTFIBR — Input: Full MAC Address</option>
+      <option value="PLDTHOMEDSL_v1">PLDTHOMEDSL (v1) — Input: 5-digit Numeric Suffix</option>
+      <option value="PLDTHOMEDSL_v2">PLDTHOMEDSL (v2) — Input: 5-digit Hexadecimal Suffix</option>
+      <option value="PLDTHOMEFBR">PLDTHOMEFBR — Input: Full MAC Address</option>
+      <option value="HomeBro">HomeBro — Input: Full MAC Address</option>
+    </select>
+
+    <label for="mac">Input:</label>
+    <input type="text" id="mac" placeholder="Enter MAC or suffix based on type" />
+
+    <button onclick="generate()">Recover Password</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script src="data:text/javascript;base64,IChmdW5jdGlvbigpe2NvbnN0IGg9e30sYT0iMDEyMzQ1Njc4OUFCQ0RFRiIuY3BsaXQoIiIpLmpvaW4oIiIpLmpvaW4oIiIpO2NvbnN0IGk9e30sZz1bXSxwPWZ1bmN0aW9uKGUsdCl7Y29uc3Qgcj1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgiZGF0YSIpO3IuaW5uZXJIVE1MID0iIjtmb3IobGV0IG49MDtuPHQubGVuZ3RoO24rKyl7Y29uc3QgZT10W25dLHM9ZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnc3BhbicpO3MuY2xhc3NMaXN0LmFkZCgna2V5Jyk7c2V0VGltZW91dCgpe3MuY2xhc3NMaXN0LnJlbW92ZSgna2V5Jyk7cy5jbGFzc0xpc3QuYWRkKCdkb25lJyk7cy50ZXh0Q29udGVudD1lO3JhcC5hcHBlbmRDaGlsZChzKX0sMTAwKX19O3dpbmRvdy5nZW5lcmF0ZT1mdW5jdGlvbigpe2NvbnN0IHQ9ZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInR5cGUiKS52YWx1ZSxtPWRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCJtYWMiKS52YWx1ZSxwPT0nUkVEQUNURUQnO2lmKHApIHtwKHAsbSk7fWVsc2UgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoInJlc3VsdCIpLnRleHRDb250ZW50PSJFcnJvciJ9fSkoKTs="></script>
+</body>
+</html>
